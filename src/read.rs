@@ -1,83 +1,67 @@
 use std::io;
 use std::io::prelude::*;
-use std::mem;
+use std::mem::size_of;
 
 mod private {
-    pub trait Sealed: Sized {}
+    pub trait Sealed {}
 }
 
-/// Conversion of bytes in little endian order to a new type.
-pub trait FromLeBytes: private::Sealed {
-    fn from_le_bytes<R: Read>(bytes: R) -> io::Result<Self>;
-}
-
-/// Conversion of bytes in big endian order to a new type.
-pub trait FromBeBytes: private::Sealed {
-    fn from_be_bytes<R: Read>(bytes: R) -> io::Result<Self>;
+/// Conversion of bytes in little/big endian order to a type.
+pub trait FromBytes<const N: usize>: private::Sealed {
+    fn from_be_bytes(bytes: [u8; N]) -> Self;
+    fn from_le_bytes(bytes: [u8; N]) -> Self;
 }
 
 /// Provides extended methods to types that implement [`Read`].
 pub trait ReadExt: Read {
-    /// Read `T` from the source in little endian order.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use std::io;
-    /// use io_ext::ReadExt;
-    /// #
-    /// # fn main() -> io::Result<()> {
-    /// #
-    /// let mut buf = io::Cursor::new(&[0x78, 0x56, 0x34, 0x12]);
-    /// let x: u32 = buf.read_le()?;
-    /// assert_eq!(x, 0x12345678);
-    /// #
-    /// # Ok(()) }
-    /// ```
-    fn read_le<T: FromLeBytes>(&mut self) -> io::Result<T> {
-        T::from_le_bytes(self)
-    }
-
     /// Read `T` from the source in big endian order.
     ///
     /// # Examples
     ///
     /// ```
-    /// use std::io;
     /// use io_ext::ReadExt;
-    /// #
-    /// # fn main() -> io::Result<()> {
-    /// #
-    /// let mut buf = io::Cursor::new(&[0x12, 0x34, 0x56, 0x78]);
-    /// let x: u32 = buf.read_be()?;
+    ///
+    /// let buf: Vec<u8> = vec![0x12, 0x34, 0x56, 0x78];
+    /// let x: u32 = buf.as_slice().read_be().unwrap();
     /// assert_eq!(x, 0x12345678);
-    /// #
-    /// # Ok(()) }
     /// ```
-    fn read_be<T: FromBeBytes>(&mut self) -> io::Result<T> {
-        T::from_be_bytes(self)
+    fn read_be<T: FromBytes<N>, const N: usize>(&mut self) -> io::Result<T> {
+        let mut buf = [0u8; N];
+        self.read_exact(&mut buf)?;
+        Ok(T::from_be_bytes(buf))
+    }
+
+    /// Read `T` from the source in little endian order.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use io_ext::ReadExt;
+    ///
+    /// let buf: Vec<u8> = vec![0x78, 0x56, 0x34, 0x12];
+    /// let x: u32 = buf.as_slice().read_le().unwrap();
+    /// assert_eq!(x, 0x12345678);
+    /// ```
+    fn read_le<T: FromBytes<N>, const N: usize>(&mut self) -> io::Result<T> {
+        let mut buf = [0u8; N];
+        self.read_exact(&mut buf)?;
+        Ok(T::from_le_bytes(buf))
     }
 }
 
 macro_rules! impl_from_bytes {
     ($($ty:ident)+) => ($(
-        impl FromLeBytes for $ty {
-            fn from_le_bytes<R: Read>(mut bytes: R) -> io::Result<Self> {
-                let mut buf = [0; mem::size_of::<Self>()];
-                bytes.read_exact(&mut buf)?;
-                Ok(Self::from_le_bytes(buf))
-            }
-        }
-
-        impl FromBeBytes for $ty {
-            fn from_be_bytes<R: Read>(mut bytes: R) -> io::Result<Self> {
-                let mut buf = [0; mem::size_of::<Self>()];
-                bytes.read_exact(&mut buf)?;
-                Ok(Self::from_be_bytes(buf))
-            }
-        }
-
         impl private::Sealed for $ty {}
+
+        impl FromBytes<{ size_of::<$ty>() }> for $ty {
+            fn from_be_bytes(bytes: [u8; size_of::<$ty>()]) -> Self {
+                Self::from_be_bytes(bytes)
+            }
+
+            fn from_le_bytes(bytes: [u8; size_of::<$ty>()]) -> Self {
+                Self::from_le_bytes(bytes)
+            }
+        }
     )+)
 }
 
