@@ -2,12 +2,8 @@ use std::io;
 use std::io::prelude::*;
 use std::mem::size_of;
 
-mod private {
-    pub trait Sealed {}
-}
-
 /// Conversion of a type to bytes in little/big endian order.
-pub trait ToBytes<const N: usize>: private::Sealed {
+pub trait ToBytes<const N: usize> {
     fn to_be_bytes(self) -> [u8; N];
     fn to_le_bytes(self) -> [u8; N];
 }
@@ -47,8 +43,6 @@ pub trait WriteExt: Write {
 
 macro_rules! impl_to_bytes {
     ($($ty:ident)+) => ($(
-        impl private::Sealed for $ty {}
-
         impl ToBytes<{ size_of::<$ty>() }> for $ty {
             fn to_be_bytes(self) -> [u8; size_of::<$ty>()] {
                 self.to_be_bytes()

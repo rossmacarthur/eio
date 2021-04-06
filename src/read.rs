@@ -2,12 +2,8 @@ use std::io;
 use std::io::prelude::*;
 use std::mem::size_of;
 
-mod private {
-    pub trait Sealed {}
-}
-
 /// Conversion of bytes in little/big endian order to a type.
-pub trait FromBytes<const N: usize>: private::Sealed {
+pub trait FromBytes<const N: usize> {
     fn from_be_bytes(bytes: [u8; N]) -> Self;
     fn from_le_bytes(bytes: [u8; N]) -> Self;
 }
@@ -51,8 +47,6 @@ pub trait ReadExt: Read {
 
 macro_rules! impl_from_bytes {
     ($($ty:ident)+) => ($(
-        impl private::Sealed for $ty {}
-
         impl FromBytes<{ size_of::<$ty>() }> for $ty {
             fn from_be_bytes(bytes: [u8; size_of::<$ty>()]) -> Self {
                 Self::from_be_bytes(bytes)
