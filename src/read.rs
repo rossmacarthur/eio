@@ -24,10 +24,11 @@ pub trait ReadExt: Read {
     ///
     /// ```
     /// use std::io;
+    /// use io_ext::ReadExt;
     /// #
     /// # fn main() -> io::Result<()> {
     /// #
-    /// let buf = io::Cursor::new(&[0x78, 0x56, 0x34, 0x12]);
+    /// let mut buf = io::Cursor::new(&[0x78, 0x56, 0x34, 0x12]);
     /// let x: u32 = buf.read_le()?;
     /// assert_eq!(x, 0x12345678);
     /// #
@@ -43,10 +44,11 @@ pub trait ReadExt: Read {
     ///
     /// ```
     /// use std::io;
+    /// use io_ext::ReadExt;
     /// #
     /// # fn main() -> io::Result<()> {
     /// #
-    /// let buf = io::Cursor::new(&[0x12, 0x34, 0x56, 0x78]);
+    /// let mut buf = io::Cursor::new(&[0x12, 0x34, 0x56, 0x78]);
     /// let x: u32 = buf.read_be()?;
     /// assert_eq!(x, 0x12345678);
     /// #
