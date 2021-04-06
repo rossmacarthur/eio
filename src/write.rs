@@ -55,6 +55,6 @@ macro_rules! impl_to_bytes {
     )+)
 }
 
-impl_to_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize }
+impl_to_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize f32 f64 }
 
 impl<W, const N: usize> WriteExt<N> for W where W: Write {}

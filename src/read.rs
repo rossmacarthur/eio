@@ -59,6 +59,6 @@ macro_rules! impl_from_bytes {
     )+)
 }
 
-impl_from_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize }
+impl_from_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize f32 f64 }
 
 impl<R, const N: usize> ReadExt<N> for R where R: Read {}
