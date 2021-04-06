@@ -1,6 +1,4 @@
-use std::io;
-use std::io::prelude::*;
-use std::mem::size_of;
+use core::mem::size_of;
 
 /// Conversion of a type to bytes in little/big endian order.
 pub trait ToBytes<const N: usize> {
@@ -9,7 +7,8 @@ pub trait ToBytes<const N: usize> {
 }
 
 /// Provides extended methods to types that implement [`Write`].
-pub trait WriteExt<const N: usize>: Write {
+#[cfg(feature = "std")]
+pub trait WriteExt<const N: usize>: std::io::Write {
     /// Write `T` to the destination in big endian order.
     ///
     /// # Examples
@@ -21,7 +20,7 @@ pub trait WriteExt<const N: usize>: Write {
     /// w.write_be(0x12345678).unwrap();
     /// assert_eq!(w, &[0x12, 0x34, 0x56, 0x78]);
     /// ```
-    fn write_be<T: ToBytes<N>>(&mut self, t: T) -> io::Result<()> {
+    fn write_be<T: ToBytes<N>>(&mut self, t: T) -> std::io::Result<()> {
         self.write_all(&t.to_be_bytes())
     }
 
@@ -36,7 +35,7 @@ pub trait WriteExt<const N: usize>: Write {
     /// w.write_le(0x12345678).unwrap();
     /// assert_eq!(w, &[0x78, 0x56, 0x34, 0x12]);
     /// ```
-    fn write_le<T: ToBytes<N>>(&mut self, t: T) -> io::Result<()> {
+    fn write_le<T: ToBytes<N>>(&mut self, t: T) -> std::io::Result<()> {
         self.write_all(&t.to_le_bytes())
     }
 }
@@ -57,4 +56,5 @@ macro_rules! impl_to_bytes {
 
 impl_to_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize f32 f64 }
 
-impl<W, const N: usize> WriteExt<N> for W where W: Write {}
+#[cfg(feature = "std")]
+impl<W, const N: usize> WriteExt<N> for W where W: std::io::Write {}

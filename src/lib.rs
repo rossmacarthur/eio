@@ -17,8 +17,13 @@
 //! }
 //! ```
 
+#![no_std]
+
+#[cfg(feature = "std")]
+extern crate std;
+
 mod read;
 mod write;
 
-pub use crate::read::{FromBytes, ReadExt};
-pub use crate::write::{ToBytes, WriteExt};
+pub use crate::read::*;
+pub use crate::write::*;
