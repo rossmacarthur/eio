@@ -9,7 +9,7 @@ pub trait FromBytes<const N: usize> {
 }
 
 /// Provides extended methods to types that implement [`Read`].
-pub trait ReadExt: Read {
+pub trait ReadExt<const N: usize>: Read {
     /// Read `T` from the source in big endian order.
     ///
     /// # Examples
@@ -21,7 +21,7 @@ pub trait ReadExt: Read {
     /// let x: u32 = buf.as_slice().read_be().unwrap();
     /// assert_eq!(x, 0x12345678);
     /// ```
-    fn read_be<T: FromBytes<N>, const N: usize>(&mut self) -> io::Result<T> {
+    fn read_be<T: FromBytes<N>>(&mut self) -> io::Result<T> {
         let mut buf = [0u8; N];
         self.read_exact(&mut buf)?;
         Ok(T::from_be_bytes(buf))
@@ -38,7 +38,7 @@ pub trait ReadExt: Read {
     /// let x: u32 = buf.as_slice().read_le().unwrap();
     /// assert_eq!(x, 0x12345678);
     /// ```
-    fn read_le<T: FromBytes<N>, const N: usize>(&mut self) -> io::Result<T> {
+    fn read_le<T: FromBytes<N>>(&mut self) -> io::Result<T> {
         let mut buf = [0u8; N];
         self.read_exact(&mut buf)?;
         Ok(T::from_le_bytes(buf))
@@ -61,4 +61,4 @@ macro_rules! impl_from_bytes {
 
 impl_from_bytes! { u8 i8 u16 i16 u32 i32 u64 i64 u128 i128 usize isize }
 
-impl<R> ReadExt for R where R: Read {}
+impl<R, const N: usize> ReadExt<N> for R where R: Read {}
