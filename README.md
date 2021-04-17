@@ -7,7 +7,7 @@ Read and write numbers in big-endian and little-endian.
 Add the following to your Cargo manifest.
 ```toml
 [dependencies]
-border = "0.1"
+eio = "0.1"
 ```
 
 ## 🤸 Usage
