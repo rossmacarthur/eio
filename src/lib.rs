@@ -3,17 +3,25 @@
 //! # Examples
 //!
 //! ```
-//! use std::io;
-//! use eio::*;
+//! use eio::ReadExt;
 //!
-//! fn main() -> io::Result<()> {
-//!     let mut data = io::Cursor::new([0x37, 0x13, 0x12, 0x34]);
+//! # fn main() -> std::io::Result<()> {
+//! #
+//! // `Cursor` implements `Read`
+//! let mut rdr = std::io::Cursor::new([
+//!   0x37, 0x13,
+//!   0x12, 0x34, 0x56, 0x78
+//! ]);
 //!
-//!     assert_eq!(data.read_le::<u16>()?, 0x1337);
-//!     assert_eq!(data.read_be::<u16>()?, 0x1234);
+//! // Read a two byte `u16` in little-endian order
+//! let i: u16 = rdr.read_le()?;
+//! assert_eq!(i, 0x1337);
 //!
-//!     Ok(())
-//! }
+//! // Read a four byte `i32` in big-endian order
+//! let i: i32 = rdr.read_be()?;
+//! assert_eq!(i, 0x12345678);
+//! #
+//! # Ok(()) }
 //! ```
 
 #![no_std]
