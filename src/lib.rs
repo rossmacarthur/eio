@@ -1,5 +1,4 @@
-//! This crate provides extended methods to types that implement
-//! [`Read`][std::io::Read] and [`Write`][std::io::Write].
+//! Read and write numbers in big-endian and little-endian.
 //!
 //! # Examples
 //!

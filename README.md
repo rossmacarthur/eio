@@ -1,6 +1,14 @@
 # eio
 
-Extended methods for types that implement `Read` and `Write`.
+Read and write numbers in big-endian and little-endian.
+
+## Getting started
+
+Add the following to your Cargo manifest.
+```toml
+[dependencies]
+border = "0.1"
+```
 
 ## 🤸 Usage
 
