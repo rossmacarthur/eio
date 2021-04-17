@@ -1,4 +1,4 @@
-# io-ext
+# eio
 
 Extended methods for types that implement `Read` and `Write`.
 
@@ -6,14 +6,14 @@ Extended methods for types that implement `Read` and `Write`.
 
 ```rust
 use std::io;
-use io_ext::*;
+use eio::*;
 
 fn main() -> io::Result<()> {
     let mut data = io::Cursor::new([0x37, 0x13, 0x12, 0x34]);
 
     assert_eq!(data.read_le::<u16>()?, 0x1337);
-
     assert_eq!(data.read_be::<u16>()?, 0x1234);
+
     Ok(())
 }
 ```

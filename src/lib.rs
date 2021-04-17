@@ -5,7 +5,7 @@
 //!
 //! ```
 //! use std::io;
-//! use io_ext::*;
+//! use eio::*;
 //!
 //! fn main() -> io::Result<()> {
 //!     let mut data = io::Cursor::new([0x37, 0x13, 0x12, 0x34]);

@@ -6,7 +6,7 @@ pub trait FromBytes<const N: usize> {
     fn from_le_bytes(bytes: [u8; N]) -> Self;
 }
 
-/// Provides extended methods to types that implement [`Read`].
+/// Provides extended methods to types that implement [`std::io::Read`].
 #[cfg(feature = "std")]
 pub trait ReadExt<const N: usize>: std::io::Read {
     /// Read `T` from the source in big endian order.
@@ -14,7 +14,7 @@ pub trait ReadExt<const N: usize>: std::io::Read {
     /// # Examples
     ///
     /// ```
-    /// use io_ext::ReadExt;
+    /// use eio::ReadExt;
     ///
     /// let buf: Vec<u8> = vec![0x12, 0x34, 0x56, 0x78];
     /// let x: u32 = buf.as_slice().read_be().unwrap();
@@ -31,7 +31,7 @@ pub trait ReadExt<const N: usize>: std::io::Read {
     /// # Examples
     ///
     /// ```
-    /// use io_ext::ReadExt;
+    /// use eio::ReadExt;
     ///
     /// let buf: Vec<u8> = vec![0x78, 0x56, 0x34, 0x12];
     /// let x: u32 = buf.as_slice().read_le().unwrap();

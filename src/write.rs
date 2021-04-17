@@ -6,7 +6,7 @@ pub trait ToBytes<const N: usize> {
     fn to_le_bytes(self) -> [u8; N];
 }
 
-/// Provides extended methods to types that implement [`Write`].
+/// Provides extended methods to types that implement [`std::io::Write`].
 #[cfg(feature = "std")]
 pub trait WriteExt<const N: usize>: std::io::Write {
     /// Write `T` to the destination in big endian order.
@@ -14,7 +14,7 @@ pub trait WriteExt<const N: usize>: std::io::Write {
     /// # Examples
     ///
     /// ```
-    /// use io_ext::WriteExt;
+    /// use eio::WriteExt;
     ///
     /// let mut w = Vec::new();
     /// w.write_be(0x12345678).unwrap();
@@ -29,7 +29,7 @@ pub trait WriteExt<const N: usize>: std::io::Write {
     /// # Examples
     ///
     /// ```
-    /// use io_ext::WriteExt;
+    /// use eio::WriteExt;
     ///
     /// let mut w = Vec::new();
     /// w.write_le(0x12345678).unwrap();
