@@ -9,6 +9,26 @@ pub trait ToBytes<const N: usize> {
 /// Provides extended methods to types that implement [`std::io::Write`].
 #[cfg(feature = "std")]
 pub trait WriteExt<const N: usize>: std::io::Write {
+    /// Write an array of size `N` to the destination.
+    ///
+    /// Note: this method is provided for completion sake because it is the
+    /// opposite of the [`ReadExt::read_array`][crate::ReadExt::read_array]
+    /// method, but since arrays implement `Deref` to slice you can just use
+    /// [`Write::write_all`][std::io::Write::write_all].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use eio::WriteExt;
+    ///
+    /// let mut w = Vec::new();
+    /// w.write_array([0x12, 0x34, 0x56]).unwrap();
+    /// assert_eq!(w, &[0x12, 0x34, 0x56]);
+    /// ```
+    fn write_array(&mut self, buf: [u8; N]) -> std::io::Result<()> {
+        self.write_all(&buf)
+    }
+
     /// Write `T` to the destination in big endian order.
     ///
     /// # Examples
