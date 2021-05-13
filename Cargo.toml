@@ -1,6 +1,6 @@
 [package]
 name = "eio"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Ross MacArthur <ross@macarthur.io>"]
 edition = "2018"
 description = "Read and write numbers in big-endian and little-endian."
